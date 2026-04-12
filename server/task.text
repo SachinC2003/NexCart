@@ -1,0 +1,66 @@
+ADMIN SIDE ==> 
+2/4/2026
+image uploder, and save image in folder                       -- complete
+edit product,                                                 -- complete
+delete product                                                -- complete
+view detail page,                                             -- complete
+view product cards ,                                          -- complete
+fetching the texonomy in product page filter according to that-- complete
+ ** search product by filter                                      -- complete   ( make req to backend) *****
+pagination in product list page                                 -- complete
+
+
+3/4/2026
+creation of model in frontend  ( entity )                       --complete
+stats                                                           -- complete
+user list on admin side - operations on user (deactive etc )    -- complete
+
+
+USER SIDE ==> 
+1. Discovery (Product)
+Get Products (Include Search, Filter, and Sort).            -- complete
+View Product Details.                                       -- complete
+Reviews & Ratings (View others' feedback).                  -- complete
+
+2. Cart (Management)
+Add to Cart.                                                -- complete
+Get Cart Items.                                               -- complete
+Update Quantity (Increase/Decrease amount).                 -- complete
+Stock Validation (Check if items are still available).
+
+4. Orders (Post-Purchase)
+Create Order (From Cart).
+Get Order History.
+View Order Details.
+Track Status (Pending, Shipped, Delivered).             -- all complete
+Cancel Order (If not yet shipped).
+Download Invoice (PDF receipt).
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------
+backend validation - zod
+product must be soft delete
+
+----------------------------------------------------------------------------------------
+LAST UI Update things 
+corrent design theme , colors is good, keep it 
+where reloading is req ex - when user add the revirew then reloading the view details page req 
+    as like this check in all application
+back button where needed( add product , etc )
+correct toast category, as error, info , success etc 
+where i added the new button , etc -  make css and adjustment in html also 
+add toaster where remining and required
+correct the dashboard page ( actualy it is landing page . there no any case where uer go to this page , but correct it  )
+we write all the interface into the one file, but some pages contails the same interfaces in local , so remove that and user global interfaces
+ui of min and max price button in filter section
+change footer routing  ( check which pages are present and add only that links)
+use logos like for cart, orders, etc
+
+remoce admin entry in user table in admin side 
+stats in products page ( currently it is static)
+change password backlink- login, products
