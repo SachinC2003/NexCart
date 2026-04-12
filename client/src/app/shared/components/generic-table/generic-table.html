@@ -1,0 +1,39 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sr. No</th>
+            @for (col of tableData.columns; track $index) {
+                <th>{{col}}</th>
+            }
+            @if (tableData.actionButtons?.length) {
+                <th>Actions</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (row of (tableData.data ?? []); track $index; let index = $index) {
+            <tr>
+                <td>{{index+1}}</td>
+                @for (data of row; track $index) {
+                    <td>{{data}}</td>
+                }
+                @if(tableData.actionButtons?.length) {
+                    <td class="action-cell">
+                        @for (button of tableData.actionButtons; track $index) {
+                            <button class="action-button" type="button" (click)="onActionButtonClick(row, button.callback)">{{button.label}}</button>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+        @empty {
+            <tr class="empty-row">
+                <td [attr.colspan]="tableData.columns.length + 1 + (tableData.actionButtons?.length ? 1 : 0)">
+                    <div class="empty-state">
+                        <i class="icon-info"></i> <span>No data available to display at this time.</span>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

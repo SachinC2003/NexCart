@@ -1,0 +1,48 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-mark">N</div>
+      <div>
+        <p class="brand-title">NexCart</p>
+        <p class="brand-tag">Create your customer account in minutes</p>
+      </div>
+    </div>
+
+    <div class="auth-header">
+      <h1>Create your account</h1>
+      <p>Save your favorites, track every order, and enjoy a faster checkout experience.</p>
+    </div>
+
+    <div class="auth-highlights">
+      <span>4-step signup</span>
+      <span>Exclusive deals</span>
+      <span>Mobile ready</span>
+    </div>
+
+    <app-generic-form
+      class="auth-form"
+      [fields]="registerBlueprint"
+      submitLabel="Create Account"
+      (formSubmit)="handleRegister($event)">
+    </app-generic-form>
+
+    <div class="auth-footer">
+      <a routerLink="/auth/login">Already have an account? Login</a>
+      <span class="dot">&middot;</span>
+      <a routerLink="/dashboard">View Store</a>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <div class="panel-content">
+      <p class="panel-eyebrow">Join the club</p>
+      <h2>Premium shopping feels better when everything is connected.</h2>
+      <p>Build your profile once and unlock seamless checkout, fresh arrivals, and beautifully organized order history.</p>
+      <ul class="panel-list">
+        <li>Register with full name, email, phone number, and password</li>
+        <li>Designed for trust, clarity, and quick conversion</li>
+        <li>Password recovery stays available whenever needed</li>
+      </ul>
+    </div>
+  </div>
+</div>

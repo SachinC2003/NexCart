@@ -1,0 +1,96 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-grid">
+  
+  @for (field of fields; track field.name) {
+    <div class="field-wrapper">
+      <label [for]="field.name" class="field-label">{{ field.label }}</label>
+
+      @switch (field.type) {
+        
+        @case ('select') {
+          <select [id]="field.name" [formControlName]="field.name" class="form-input">
+            @if (field.placeholder) {
+              <option value="" disabled selected>{{ field.placeholder }}</option>
+            }
+            @for (opt of field.options; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+            @if (field.allowAddNew) {
+              <option value="add_new">Add New</option>
+            }
+          </select>
+          @if (field.allowAddNew && field.newFieldName && showNewInputs[field.name]) {
+            <input 
+              [id]="field.newFieldName" 
+              [formControlName]="field.newFieldName"
+              [placeholder]="'Enter new ' + field.label.toLowerCase()"
+              class="form-input new-input">
+            @if (form.get(field.newFieldName!)?.touched && form.get(field.newFieldName!)?.invalid) {
+              <div class="error-container">
+                @if (form.get(field.newFieldName!)?.hasError('required')) {
+                  <small class="error-text">New {{ field.label.toLowerCase() }} is required.</small>
+                }
+              </div>
+            }
+          }
+        }
+
+        @case ('textarea') {
+          <textarea 
+            [id]="field.name" 
+            [formControlName]="field.name" 
+            [placeholder]="field.placeholder || ''"
+            class="form-input textarea">
+          </textarea>
+        }
+
+        @case ('checkbox') {
+          <div class="checkbox-container">
+            <input type="checkbox" [id]="field.name" [formControlName]="field.name">
+            <span>{{ field.placeholder }}</span>
+          </div>
+        }
+
+        @case ('radio') {
+          <div class="radio-group">
+            @for (opt of field.options; track opt.value) {
+              <label class="radio-label">
+                <input type="radio" [formControlName]="field.name" [value]="opt.value">
+                {{ opt.label }}
+              </label>
+            }
+          </div>
+        }
+
+        @default {
+          <input 
+            [id]="field.name" 
+            [type]="field.type" 
+            [formControlName]="field.name" 
+            [placeholder]="field.placeholder || ''"
+            class="form-input">
+        }
+      }
+
+      @if (form.get(field.name)?.touched && form.get(field.name)?.invalid) {
+        <div class="error-container">
+          @if (form.get(field.name)?.hasError('required')) {
+            <small class="error-text">{{ field.label }} is required.</small>
+          }
+          @if (form.get(field.name)?.hasError('minlength')) {
+            <small class="error-text">Too short (min {{ field.validations?.minLength }} chars).</small>
+          }
+          @if (form.get(field.name)?.hasError('pattern')) {
+            <small class="error-text">Please enter a valid {{ field.label.toLowerCase() }}.</small>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <div class="form-actions">
+    <button type="submit" [disabled]="form.invalid" class="btn-submit">
+      {{ submitLabel }}
+    </button>
+  </div>
+
+</form>

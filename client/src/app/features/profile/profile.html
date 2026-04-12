@@ -1,0 +1,125 @@
+<div class="profile-page" *ngIf="user$ | async as user">
+  <div class="profile-shell">
+    <section class="profile-hero">
+      <div class="profile-hero__content">
+        <p class="profile-eyebrow">Account center</p>
+        <h1>{{ user.name }}</h1>
+        <p class="profile-subtitle">Keep your account details current so checkout, delivery, and account recovery stay smooth.</p>
+
+        <div class="profile-badges">
+          <span>{{ user.role | titlecase }}</span>
+          <span>{{ user.location || 'Location not set' }}</span>
+          <span>Member since {{ user.createdAt | date:'mediumDate' }}</span>
+        </div>
+        <button class="cancel-btn" type="button" (click)="backToProduct()">Back to products</button>
+      </div>
+
+      <div class="profile-hero__side">
+        <div class="profile-avatar-card">
+          <div class="avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+          <div class="user-info">
+            <h2>{{ user.name }}</h2>
+            <p>{{ user.email }}</p>
+          </div>
+        </div>
+
+        <div class="profile-header-actions">
+          <button class="edit-btn" (click)="toggleEdit(user)">
+            {{ editMode ? 'Close Editor' : 'Edit Profile' }}
+          </button>
+          <button class="cancel-btn primary-outline-btn" type="button" routerLink="/change-password">Change Password</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-grid">
+      <article class="profile-card profile-card--primary">
+        <div class="card-header">
+          <div>
+            <p class="profile-eyebrow">Profile details</p>
+            <h2>Personal information</h2>
+          </div>
+          <span class="card-header__hint">Live account snapshot</span>
+        </div>
+
+        <div class="profile-details">
+          <div class="detail-row">
+            <label>Phone Number</label>
+            <span>{{ user.phoneNumber || 'Not specified' }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Role</label>
+            <span>{{ user.role }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Location</label>
+            <span>{{ user.location || 'Not specified' }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Member Since</label>
+            <span>{{ user.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="profile-card profile-card--secondary">
+        <div class="card-header">
+          <div>
+            <p class="profile-eyebrow">Account care</p>
+            <h2>Quick actions</h2>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="quick-action-note">
+            <strong>Edit your profile</strong>
+            <p>Update your name, phone number, and location in the editor.</p>
+          </div>
+          <div class="quick-action-note">
+            <strong>Refresh your password</strong>
+            <p>Keep your account secure with a new password when needed.</p>
+          </div>
+          <div class="quick-action-note">
+            <strong>Return to shopping</strong>
+            <p>Jump back to the catalog any time without losing your progress.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!(user$ | async)">
+  Loading profile...
+</div>
+
+@if(editMode){
+    <div class="profile-modal" (click)="cancelEdit()">
+        <div class="auth-card profile-modal-card" (click)="$event.stopPropagation()">
+            <div class="auth-brand">
+                <div class="brand-mark">N</div>
+                <div>
+                    <p class="brand-title">NexCart</p>
+                    <p class="brand-tag">Keep your profile details up to date</p>
+                </div>
+                <div class="profile-modal-actions">
+                    <button class="cancel-btn" type="button" (click)="cancelEdit()">Cancel</button>
+                </div>
+            </div>
+
+            <div class="auth-header">
+                <h1>Edit profile</h1>
+                <p>Update your account details below.</p>
+            </div>
+
+            <div class="profile-modal-form">
+        <app-generic-form
+            class="auth-form"
+            [fields]="editProfileBlueprint"
+            [submitLabel]="isSaving ? 'Saving...' : 'Save Changes'"
+            (formSubmit)="editProfile($event)">
+        </app-generic-form>
+            </div>
+        </div>
+    </div>
+}

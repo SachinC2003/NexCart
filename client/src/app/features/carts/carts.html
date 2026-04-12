@@ -1,0 +1,212 @@
+<section class="cart-page">
+  <div class="cart-shell">
+    <header class="cart-hero">
+      <div>
+        <p class="eyebrow">Your shopping cart</p>
+        <h1>Everything you picked, organized in one place.</h1>
+        <p class="hero-copy">
+          Review quantities, check savings, and move forward with a clearer summary of what you are about to order.
+        </p>
+        <button type="button" class="hero-back-button" (click)="continueShopping()">Back to products</button>
+      </div>
+
+      <div class="hero-stats">
+        <article class="stat-card">
+          <span>Items</span>
+          <strong>{{ totalItems }}</strong>
+        </article>
+        <article class="stat-card">
+          <span>Savings</span>
+          <strong>Rs. {{ savings }}</strong>
+        </article>
+        <article class="stat-card">
+          <span>Total</span>
+          <strong>Rs. {{ grandTotal }}</strong>
+        </article>
+      </div>
+    </header>
+
+    @if (loading) {
+      <section class="state-card">
+        <p class="eyebrow">Loading</p>
+        <h2>Fetching your cart items...</h2>
+      </section>
+    } @else if (errormessage) {
+      <section class="state-card error">
+        <p class="eyebrow">Something went wrong</p>
+        <h2>{{ errormessage }}</h2>
+      </section>
+    } @else if (!cartItems.length) {
+      <section class="state-card">
+        <p class="eyebrow">Cart is empty</p>
+        <h2>No products added yet.</h2>
+        <p>Browse the catalog and add something you want to see here.</p>
+      </section>
+    } @else {
+      <div class="cart-layout">
+        <main class="cart-list">
+          @for (item of cartItems; track item.id) {
+            <article class="cart-card">
+              <input type="checkbox" class="select-item" aria-label="Select item" (change)="itemSelection(item.product.id, item.quantity, $event)" />
+              <div class="product-visual">
+                @if (getProductImage(item.product.image)) {
+                  <img [src]="getProductImage(item.product.image)" [alt]="item.product.name" />
+                } @else {
+                  <div class="image-fallback">
+                    <span>{{ item.product.name.charAt(0) }}</span>
+                  </div>
+                }
+              </div>
+
+              <div class="product-content">
+                <div class="product-copy">
+                  <div class="product-head">
+                    <div>
+                      <p class="brand">{{ item.product.brandName }}</p>
+                      <h3>{{ item.product.name }}</h3>
+                    </div>
+                    <span class="offer-badge">{{ item.product.offer || 0 }}% OFF</span>
+                  </div>
+
+                  <p class="description">{{ item.product.description }}</p>
+
+                  <div class="meta-row">
+                    <span>Stock: {{ item.product.stock }}</span>
+                    <span>Qty: {{ item.quantity }}</span>
+                    <span>Rating: {{ item.product.avgRating || 0 }}</span>
+                  </div>
+
+                  <div class="quantity-stepper" aria-label="Quantity controls">
+                    <button (click)="changeQuantity(item.product.id, item.product.stock, false)" type="button" class="stepper-button" aria-label="Decrease quantity">-</button>
+                    <span class="stepper-value">{{ item.quantity }}</span>
+                    <button (click)="changeQuantity(item.product.id, item.product.stock, true)" type="button" class="stepper-button" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+
+                <div class="price-panel">
+                  <strong>Rs. {{ getLineTotal(item) }}</strong>
+                  <span>Rs. {{ getOriginalPrice(item) * item.quantity }}</span>
+                  <small>Rs. {{ getProductPrice(item) }} each</small>
+                </div>
+              </div>
+            </article>
+          }
+        </main>
+
+        <aside class="summary-card">
+          <p class="eyebrow">Order summary</p>
+          <h2>Quick cost breakdown</h2>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>Rs. {{ subtotal }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Savings</span>
+            <strong class="positive">- Rs. {{ savings }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Delivery</span>
+            <strong>Rs. {{ deliveryFee }}</strong>
+          </div>
+
+          <div class="summary-total">
+            <span>Grand total</span>
+            <strong>Rs. {{ grandTotal }}</strong>
+          </div>
+
+          <button (click)="proceedTocheckOut()" class="checkout-button">Proceed to checkout</button>
+          <p class="summary-note">Free delivery unlocks automatically on larger orders in the next step.</p>
+        </aside>
+      </div>
+    }
+  </div>
+</section>
+
+
+
+
+
+
+@if(isModelOpen){
+<div class="checkout-modal" aria-hidden="true">
+  <button type="button" class="modal-backdrop" aria-label="Close popup" (click)="closeCheckoutModal()"></button>
+
+  <section class="modal-card" aria-labelledby="checkout-title">
+    <div class="modal-header">
+      <div>
+        <p class="eyebrow">Final order info</p>
+        <h2 id="checkout-title">Complete delivery and payment details</h2>
+      </div>
+      <button type="button" class="modal-close" aria-label="Close popup" (click)="closeCheckoutModal()">x</button>
+    </div>
+
+    <div class="modal-grid">
+      <div class="modal-section">
+        <p class="section-label">Delivery location</p>
+        <label class="field-label" for="delivery-location">Address</label>
+        <input id="delivery-location" type="text" placeholder="Enter your full delivery address" />
+
+        <div class="details-card">
+          <p class="section-label">Order details</p>
+
+          <div class="summary-row compact">
+            <span>Subtotal</span>
+            <strong>Rs. {{ subtotal }}</strong>
+          </div>
+          <div class="summary-row compact">
+            <span>Savings</span>
+            <strong class="positive">- Rs. {{ savings }}</strong>
+          </div>
+          <div class="summary-row compact">
+            <span>Delivery charges</span>
+            <strong>Rs. {{ deliveryFee }}</strong>
+          </div>
+          <div class="summary-total compact">
+            <span>Total payable</span>
+            <strong>Rs. {{ grandTotal }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <p class="section-label">Payment method</p>
+
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="Cash On Delivery" [(ngModel)]="paymentMethod" checked />
+          <span>
+            <strong>Cash on delivery</strong>
+            <small>Pay once the order reaches your doorstep.</small>
+          </span>
+        </label>
+
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="Credit Card" [(ngModel)]="paymentMethod" />
+          <span>
+            <strong>Credit Card</strong>
+            <small>Use your credit card details.</small>
+          </span>
+        </label>
+
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="Debit Card" [(ngModel)]="paymentMethod"/>
+          <span>
+            <strong>Debit Card</strong>
+            <small>Use your debit card details.</small>
+          </span>
+        </label>
+
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="Back Transfer" [(ngModel)]="paymentMethod" />
+          <span>
+            <strong>Bank Transfer</strong>
+            <small>Direct back transfer method.</small>
+          </span>
+        </label>
+
+        <button (click)="putOrder()" type="button" class="confirm-button">Make order</button>
+      </div>
+    </div>
+  </section>
+</div>
+}

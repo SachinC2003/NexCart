@@ -1,0 +1,128 @@
+<section class="orders-page">
+  <div class="orders-shell">
+    <header class="orders-hero">
+      <div>
+        <p class="eyebrow">Order history</p>
+        <h1>Track every purchase from one clean timeline.</h1>
+        <p class="hero-copy">
+          Review placed orders, payment method, totals, and every product included in each checkout.
+        </p>
+        <button type="button" class="hero-back-button" (click)="goBack()">Back to products</button>
+      </div>
+
+      <div class="hero-stats">
+        <article class="stat-card">
+          <span>Total orders</span>
+          <strong>{{ totalOrders }}</strong>
+        </article>
+        <article class="stat-card">
+          <span>Items bought</span>
+          <strong>{{ totalItems }}</strong>
+        </article>
+        <article class="stat-card">
+          <span>Total spent</span>
+          <strong>Rs. {{ totalSpent }}</strong>
+        </article>
+      </div>
+    </header>
+    <div class="filter-toolbar">
+        <button class="filter-button" (click)="filterByStatus('ALL')" type="button">All</button>
+        <button class="filter-button" (click)="filterByStatus('PLACED')" type="button">Placed</button>
+        <button class="filter-button" (click)="filterByStatus('DELIVERED')" type="button">Delivered</button>
+        <button class="filter-button" (click)="filterByStatus('CANCELLED')" type="button">Canceled</button>
+    </div>
+    @if (loading) {
+      <section class="state-card">
+        <p class="eyebrow">Loading</p>
+        <h2>Fetching your orders...</h2>
+      </section>
+    } @else if (errorMessage) {
+      <section class="state-card error">
+        <p class="eyebrow">Something went wrong</p>
+        <h2>{{ errorMessage }}</h2>
+      </section>
+    } @else if (!orders.length) {
+      <section class="state-card">
+        <p class="eyebrow">No orders yet</p>
+        <h2>Your order history is empty.</h2>
+        <p>Once you place an order, it will appear here with all item details.</p>
+      </section>
+    } @else {
+      <div class="orders-list">
+        @for (order of orders; track order.id) {
+          <article class="order-card">
+            <div class="order-topbar">
+              <div>
+                <p class="order-label">Order #{{ order.id }}</p>
+                <h2>{{ formatDate(order.createdAt) }}</h2>
+              </div>
+
+              <div class="order-badges">
+                <span class="status-pill" [class]="getStatusClass(order.status)">{{ getStatusLabel(order.status) }}</span>
+                <span class="payment-pill">{{ order.paymentMethod || 'Payment method pending' }}</span>
+                @if (order.status === 'PLACED') {
+                  <button class="order-action-button success" type="button" (click)="updateOrderStatus(order.id, 'DELIVERED')">Mark as Completed</button>
+                  <button class="order-action-button danger" type="button" (click)="updateOrderStatus(order.id, 'CANCELLED')">Cancel</button>
+                }
+              </div>
+            </div>
+
+            <!-- <div class="order-summary-grid">
+              <div class="summary-box">
+                <span>Total amount</span>
+                <strong>Rs. {{ order.totalAmount }}</strong>
+              </div>
+              <div class="summary-box">
+                <span>Items</span>
+                <strong>{{ getOrderItems(order).length }}</strong>
+              </div>
+              <div class="summary-box">
+                <span>Updated</span>
+                <strong>{{ formatDate(order.updatedAt) }}</strong>
+              </div>
+            </div> -->
+
+            <div class="order-items">
+              @for (item of getOrderItems(order); track item.id) {
+                <article class="order-item-card">
+                  <div class="item-image">
+                    @if (!isProductDeleted(item)) {
+                      <img [src]="getProductImage(item.product?.image)" [alt]="getProductName(item)" appImageFallback />
+                    } @else {
+                      <div class="image-fallback">X</div>
+                    }
+                  </div>
+
+                  <div class="item-copy">
+                    <div>
+                      <p class="brand">{{ getProductBrand(item) }}</p>
+                      <h3>{{ getProductName(item) }}</h3>
+                      <p class="description">{{ getProductDescription(item) }}</p>
+                    </div>
+
+                    <div class="item-meta">
+                      <span>Qty {{ item.quantity }}</span>
+                      <span>Unit Rs. {{ getProductPrice(item) }}</span>
+                      <span>Subtotal Rs. {{ item.subTotal }}</span>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+          </article>
+        }
+        <div class="pagination-controls" *ngIf="totalPages > 1">
+              <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                Previous
+              </button>
+
+              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+              <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+                Next
+              </button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

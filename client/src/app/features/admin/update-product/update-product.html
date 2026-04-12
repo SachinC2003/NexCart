@@ -1,0 +1,205 @@
+<div class="update-product-container">
+  <div class="page-shell">
+    <section class="intro-panel">
+      <button class="ghost-btn top-back-btn" type="button" (click)="goBack()">Back to details</button>
+      <p class="eyebrow">Admin catalog</p>
+      <h2>Update product</h2>
+      <p class="intro-copy">Refine pricing, taxonomy, stock, and imagery in a cleaner editing workspace that keeps the current behavior intact.</p>
+
+      <div class="feature-pills">
+        <span>Existing data preserved</span>
+        <span>Optional image swap</span>
+        <span>Catalog-safe editing</span>
+      </div>
+
+      <div class="info-card">
+        <p class="info-card__label">Editing flow</p>
+        <p>Use the live preview to confirm the product image, then adjust fields only where the listing actually needs revision.</p>
+      </div>
+    </section>
+
+    <section class="editor-panel">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Product editor</p>
+          <h3>Product details</h3>
+        </div>
+        <p class="header-copy">The layout is more polished now, but the same update handlers and validations are still driving the form.</p>
+      </div>
+
+      <section class="status-card" *ngIf="loading">
+        <h3>Loading product...</h3>
+        <p>We are preparing the current product data for editing.</p>
+      </section>
+
+      <section class="status-card error-card" *ngIf="!loading && errorMessage">
+        <h3>Unable to load this product</h3>
+        <p>{{ errorMessage }}</p>
+      </section>
+
+      <form
+        *ngIf="!loading && !errorMessage"
+        [formGroup]="updateProductForm"
+        (ngSubmit)="handleUpdateProduct()"
+        class="product-form"
+      >
+        <div class="preview-panel">
+          <div class="preview-frame" *ngIf="getCurrentImage(); else noImage">
+            <img [src]="getCurrentImage()" alt="Product preview" appImageFallback />
+          </div>
+          <ng-template #noImage>
+            <div class="preview-frame empty">
+              <span>No image available</span>
+            </div>
+          </ng-template>
+
+          <div class="preview-copy">
+            <h3>Visual preview</h3>
+            <p>Upload a new image only if you want to replace the current one. Leaving it empty keeps the existing image.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" formControlName="name" placeholder="ex: Apple iPhone 14">
+            <div *ngIf="updateProductForm.get('name')?.touched && updateProductForm.get('name')?.invalid" class="error">
+              Name is required.
+            </div>
+          </div>
+
+          <div class="form-group full-span">
+            <label for="description">Description</label>
+            <textarea id="description" formControlName="description" placeholder="Description"></textarea>
+            <div *ngIf="updateProductForm.get('description')?.touched && updateProductForm.get('description')?.invalid" class="error">
+              Description is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="brandName">Brand Name</label>
+            <input type="text" id="brandName" formControlName="brandName" placeholder="ex: Apple">
+            <div *ngIf="updateProductForm.get('brandName')?.touched && updateProductForm.get('brandName')?.invalid" class="error">
+              Brand Name is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" formControlName="type">
+              <option value="">Select Type</option>
+              <option *ngFor="let t of taxonomy" [value]="t.name">{{ t.name }}</option>
+              <option value="add_new">+ Add New Type</option>
+            </select>
+            <div *ngIf="updateProductForm.get('type')?.touched && updateProductForm.get('type')?.invalid" class="error">
+              Type is required.
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="isAddNewType()">
+            <label for="newType">New Type Name</label>
+            <input type="text" id="newType" formControlName="newType" placeholder="Enter new type">
+            <div *ngIf="updateProductForm.get('newType')?.touched && updateProductForm.get('newType')?.invalid" class="error">
+              New Type is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" formControlName="category">
+              <option value="">Select Category</option>
+              <ng-container *ngIf="!isAddNewType()">
+                <option *ngFor="let c of availableCategories" [value]="c.value">{{ c.label }}</option>
+                <option value="add_new">+ Add New Category</option>
+              </ng-container>
+              <ng-container *ngIf="isAddNewType()">
+                <option value="add_new">+ Add New Category</option>
+              </ng-container>
+            </select>
+            <div *ngIf="updateProductForm.get('category')?.touched && updateProductForm.get('category')?.invalid" class="error">
+              Category is required.
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="isAddNewCategory()">
+            <label for="newCategory">New Category Name</label>
+            <input type="text" id="newCategory" formControlName="newCategory" placeholder="Enter new category">
+            <div *ngIf="updateProductForm.get('newCategory')?.touched && updateProductForm.get('newCategory')?.invalid" class="error">
+              New Category is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subCategory">Sub-category</label>
+            <select id="subCategory" formControlName="subCategory">
+              <option value="">Select Sub-category</option>
+              <ng-container *ngIf="!isAddNewCategory()">
+                <option *ngFor="let s of availableSubcategories" [value]="s.value">{{ s.label }}</option>
+                <option value="add_new">+ Add New Sub-category</option>
+              </ng-container>
+              <ng-container *ngIf="isAddNewCategory()">
+                <option value="add_new">+ Add New Sub-category</option>
+              </ng-container>
+            </select>
+            <div *ngIf="updateProductForm.get('subCategory')?.touched && updateProductForm.get('subCategory')?.invalid" class="error">
+              Sub-category is required.
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="isAddNewSubCategory()">
+            <label for="newSubCategory">New Sub-category Name</label>
+            <input type="text" id="newSubCategory" formControlName="newSubCategory" placeholder="Enter new sub-category">
+            <div *ngIf="updateProductForm.get('newSubCategory')?.touched && updateProductForm.get('newSubCategory')?.invalid" class="error">
+              New Sub-category is required.
+            </div>
+          </div>
+
+          <div class="form-group full-span">
+            <label for="image">Replace Image</label>
+            <input type="file" id="image" (change)="onFileSelect($event)" accept="image/*">
+            <small>Optional. Leave empty to keep the current image.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="price">Price (Rs.)</label>
+            <input type="number" id="price" formControlName="price" placeholder="e.g. 300">
+            <div *ngIf="updateProductForm.get('price')?.touched && updateProductForm.get('price')?.invalid" class="error">
+              Price is required and must be greater than 0.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="discount">Discount (%)</label>
+            <input type="number" id="discount" formControlName="discount" placeholder="e.g. 20">
+            <div *ngIf="updateProductForm.get('discount')?.touched && updateProductForm.get('discount')?.invalid" class="error">
+              Discount is required and must be between 0 and 100.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="originalPrice">Original Price (Rs.)</label>
+            <input type="number" id="originalPrice" formControlName="originalPrice" placeholder="e.g. 300">
+            <div *ngIf="updateProductForm.get('originalPrice')?.touched && updateProductForm.get('originalPrice')?.invalid" class="error">
+              Original Price is required and must be greater than 0.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" formControlName="stock" placeholder="e.g. 20">
+            <div *ngIf="updateProductForm.get('stock')?.touched && updateProductForm.get('stock')?.invalid" class="error">
+              Stock is required and must be 0 or more.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="ghost-btn" type="button" (click)="goBack()">Cancel</button>
+          <button type="submit" [disabled]="updateProductForm.invalid || saving" class="submit-btn">
+            {{ saving ? 'Saving...' : 'Update Product' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

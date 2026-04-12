@@ -1,0 +1,83 @@
+:host {
+  display: block;
+  width: min(34vw, 360px);
+  min-width: min(34vw, 360px);
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  gap: 10px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.search-box:focus-within {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
+}
+
+.icon-wrap {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  display: inline-flex;
+  color: #64748b;
+}
+
+.icon-wrap svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font: inherit;
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+.clear-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  flex: 0 0 auto;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.clear-button:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+@media (max-width: 960px) {
+  :host {
+    width: 100%;
+    min-width: 100%;
+  }
+}

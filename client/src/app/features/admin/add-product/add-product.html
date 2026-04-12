@@ -1,0 +1,174 @@
+<div class="add-product-container">
+    <div class="page-shell">
+        <section class="intro-panel">
+            <button type="button" class="back-btn" (click)="goBack()">Back to products</button>
+            <p class="eyebrow">Admin catalog</p>
+            <h2>Add New Product</h2>
+            <p class="lead-copy">Create a polished listing with pricing, taxonomy, stock, and imagery in one focused form.</p>
+
+            <div class="feature-pills">
+                <span>Structured taxonomy</span>
+                <span>Image upload</span>
+                <span>Fast publish flow</span>
+            </div>
+
+            <div class="side-note">
+                <p class="side-note__label">Publishing note</p>
+                <p>Fill the essentials first, then use the add-new taxonomy fields only when the current catalog structure does not fit.</p>
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <div class="form-panel__header">
+                <div>
+                    <p class="eyebrow">Product details</p>
+                    <h3>Listing information</h3>
+                </div>
+                <p>Everything here is visual polish only. Your existing add-product behavior stays unchanged.</p>
+            </div>
+
+            <form [formGroup]="addProductForm" (ngSubmit)="handleAddProduct()" class="product-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" formControlName="name" placeholder="ex: Apple iPhone 14">
+                        <div *ngIf="addProductForm.get('name')?.touched && addProductForm.get('name')?.invalid" class="error">
+                            Name is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group full-span">
+                        <label for="description">Description</label>
+                        <textarea id="description" formControlName="description" placeholder="Description"></textarea>
+                        <div *ngIf="addProductForm.get('description')?.touched && addProductForm.get('description')?.invalid" class="error">
+                            Description is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brandName">Brand Name</label>
+                        <input type="text" id="brandName" formControlName="brandName" placeholder="ex: Apple">
+                        <div *ngIf="addProductForm.get('brandName')?.touched && addProductForm.get('brandName')?.invalid" class="error">
+                            Brand Name is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <select id="type" formControlName="type">
+                            <option value="">Select Type</option>
+                            <option *ngFor="let t of taxonomy" [value]="t.name">{{ t.name }}</option>
+                            <option value="add_new">+ Add New Type</option>
+                        </select>
+                        <div *ngIf="addProductForm.get('type')?.touched && addProductForm.get('type')?.invalid" class="error">
+                            Type is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="isAddNewType()">
+                        <label for="newType">New Type Name</label>
+                        <input type="text" id="newType" formControlName="newType" placeholder="Enter new type">
+                        <div *ngIf="addProductForm.get('newType')?.touched && addProductForm.get('newType')?.invalid" class="error">
+                            New Type is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="addProductForm.get('type')?.value">
+                        <label for="category">Category</label>
+                        <select id="category" formControlName="category">
+                            <option value="">Select Category</option>
+                            <ng-container *ngIf="!isAddNewType()">
+                                <option *ngFor="let c of availableCategories" [value]="c.value">{{ c.label }}</option>
+                                <option value="add_new">+ Add New Category</option>
+                            </ng-container>
+                            <ng-container *ngIf="isAddNewType()">
+                                <option value="add_new">+ Add New Category</option>
+                            </ng-container>
+                        </select>
+                        <div *ngIf="addProductForm.get('category')?.touched && addProductForm.get('category')?.invalid" class="error">
+                            Category is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="isAddNewCategory()">
+                        <label for="newCategory">New Category Name</label>
+                        <input type="text" id="newCategory" formControlName="newCategory" placeholder="Enter new category">
+                        <div *ngIf="addProductForm.get('newCategory')?.touched && addProductForm.get('newCategory')?.invalid" class="error">
+                            New Category is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="addProductForm.get('category')?.value">
+                        <label for="subCategory">Sub-category</label>
+                        <select id="subCategory" formControlName="subCategory">
+                            <option value="">Select Sub-category</option>
+                            <ng-container *ngIf="!isAddNewCategory()">
+                                <option *ngFor="let s of availableSubcategories" [value]="s.value">{{ s.label }}</option>
+                                <option value="add_new">+ Add New Sub-category</option>
+                            </ng-container>
+                            <ng-container *ngIf="isAddNewCategory()">
+                                <option value="add_new">+ Add New Sub-category</option>
+                            </ng-container>
+                        </select>
+                        <div *ngIf="addProductForm.get('subCategory')?.touched && addProductForm.get('subCategory')?.invalid" class="error">
+                            Sub-category is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="isAddNewSubCategory()">
+                        <label for="newSubCategory">New Sub-category Name</label>
+                        <input type="text" id="newSubCategory" formControlName="newSubCategory" placeholder="Enter new sub-category">
+                        <div *ngIf="addProductForm.get('newSubCategory')?.touched && addProductForm.get('newSubCategory')?.invalid" class="error">
+                            New Sub-category is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group full-span">
+                        <label for="image">Product Image</label>
+                        <input type="file" id="image" (change)="onFileSelect($event)" accept="image/*">
+                        <div *ngIf="addProductForm.get('image')?.touched && addProductForm.get('image')?.invalid" class="error">
+                            Image URL is required.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price (Rs.)</label>
+                        <input type="number" id="price" formControlName="price" placeholder="e.g. 300">
+                        <div *ngIf="addProductForm.get('price')?.touched && addProductForm.get('price')?.invalid" class="error">
+                            Price is required and must be greater than 0.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discount">Discount (%)</label>
+                        <input type="number" id="discount" formControlName="discount" placeholder="e.g. 20">
+                        <div *ngIf="addProductForm.get('discount')?.touched && addProductForm.get('discount')?.invalid" class="error">
+                            Discount is required and must be between 0 and 100.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="originalPrice">Original Price (Rs.)</label>
+                        <input type="number" id="originalPrice" formControlName="originalPrice" placeholder="e.g. 300">
+                        <div *ngIf="addProductForm.get('originalPrice')?.touched && addProductForm.get('originalPrice')?.invalid" class="error">
+                            Original Price is required and must be greater than 0.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock">Stock</label>
+                        <input type="number" id="stock" formControlName="stock" placeholder="e.g. 20">
+                        <div *ngIf="addProductForm.get('stock')?.touched && addProductForm.get('stock')?.invalid" class="error">
+                            Stock is required and must be 0 or more.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="back-btn secondary-btn" (click)="goBack()">Cancel</button>
+                    <button type="submit" [disabled]="addProductForm.invalid" class="submit-btn">Add Product</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>

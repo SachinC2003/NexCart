@@ -1,0 +1,60 @@
+<section class="stats-page">
+  <div class="stats-hero">
+    <div class="hero-copy-block">
+      <p class="eyebrow">Admin overview</p>
+      <h1>Platform stats dashboard</h1>
+      <p class="hero-copy">
+        Monitor the core business numbers and keep a close eye on the latest users from one place.
+      </p>
+      <button class="hero-back-button" type="button" (click)="goBack()">Back to products</button>
+    </div>
+    <div class="hero-side">
+      <div class="hero-badge">
+        <span>Live snapshot</span>
+        <strong>{{ users.length }} users listed</strong>
+      </div>
+      <div class="hero-note">
+        <p class="section-label">Admin pulse</p>
+        <p>Review the headline numbers here, then jump back into catalog management whenever you need to act.</p>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="state-card">
+      <h2>Loading dashboard...</h2>
+      <p>We are pulling the latest stats for your admin view.</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="state-card error">
+      <h2>Unable to load stats</h2>
+      <p>{{ errorMessage }}</p>
+    </div>
+  } @else if (stats) {
+    <div class="stats-grid">
+      @for (card of statCards; track card.label) {
+        <article class="metric-card" [class]="'metric-card ' + card.tone">
+          <p>{{ card.label }}</p>
+          <h2>{{ card.value }}</h2>
+        </article>
+      }
+    </div>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="section-label">Users</p>
+          <h2>Recent user list</h2>
+        </div>
+        <p class="panel-copy">
+          Use the shared table actions to quickly activate or deactivate accounts.
+        </p>
+      </div>
+
+      <app-generic-table
+        [tableData]="tableData"
+        (actionEvent)="onActionEvent($event)">
+      </app-generic-table>
+    </section>
+  }
+</section>

@@ -1,0 +1,10 @@
+:host {
+  --accent: #0f766e;
+  --accent-strong: #0b4f4a;
+  --accent-soft: rgba(15, 118, 110, 0.15);
+  --panel-bg: linear-gradient(140deg, #d7f4ef 0%, #ffe6cf 55%, #dfe9ff 100%);
+}
+
+.dot {
+  color: rgba(15, 23, 42, 0.35);
+}

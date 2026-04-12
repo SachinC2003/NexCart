@@ -1,0 +1,23 @@
+.btn-generic {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  color: white; /* Text color */
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s active;
+  font-family: inherit;
+}
+
+.btn-generic:hover {
+  opacity: 0.9; /* Slight fade on hover */
+}
+
+.btn-generic:active {
+  transform: scale(0.98); /* Slight "push" effect */
+}
+
+/* Optional: Default color if none is provided */
+.btn-generic:not([style]) {
+  background-color: #3b82f6;
+}

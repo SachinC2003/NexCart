@@ -1,0 +1,50 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-mark">N</div>
+      <div>
+        <p class="brand-title">NexCart</p>
+        <p class="brand-tag">Premium shopping for modern lifestyles</p>
+      </div>
+    </div>
+
+    <div class="auth-header">
+      <h1>Welcome back</h1>
+      <p>Sign in to manage your orders, wishlist, and faster checkout.</p>
+    </div>
+
+    <div class="auth-highlights">
+      <span>Member pricing</span>
+      <span>Easy returns</span>
+      <span>Tracked delivery</span>
+    </div>
+
+    <app-generic-form
+      class="auth-form"
+      [fields]="loginBlueprint"
+      submitLabel="Sign In"
+      (formSubmit)="handleLogin($event)">
+    </app-generic-form>
+
+    <div class="auth-footer">
+      <a routerLink="/auth/forgot-password">Forgot Password?</a>
+      <span class="dot">&middot;</span>
+      <a routerLink="/auth/register">Create Account</a>
+      <span class="dot">&middot;</span>
+      <a routerLink="/user/products">Back to Store</a>
+    </div>
+  </div>
+
+  <div class="auth-panel">
+    <div class="panel-content">
+      <p class="panel-eyebrow">Shop smarter</p>
+      <h2>Discover curated collections with a smooth, premium buying flow.</h2>
+      <p>From trending essentials to elevated everyday pieces, NexCart is built to feel fast, confident, and beautiful on every screen.</p>
+      <ul class="panel-list">
+        <li>One account for orders, saved addresses, and wishlist picks</li>
+        <li>Clean checkout journey designed for mobile and desktop</li>
+        <li>Secure recovery flow ready whenever you need it</li>
+      </ul>
+    </div>
+  </div>
+</div>
