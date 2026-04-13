@@ -1,0 +1,103 @@
+<div class="dashboard">
+  <header class="site-header">
+    <a class="site-brand" routerLink="/dashboard">
+      <span class="site-brand__mark">NX</span>
+      <span>
+        <strong>NexCart</strong>
+        <small>Premium Fitness & Lifestyle</small>
+      </span>
+    </a>
+
+    <nav class="site-nav">
+      <a routerLink="/dashboard">Home</a>
+      <a routerLink="/products">Shop All</a>
+      <a routerLink="/auth/login">Sign In</a>
+      <a routerLink="/auth/register">Join NexCart</a>
+    </nav>
+
+    <div class="site-actions">
+      <a class="dash-link primary" routerLink="/auth/register">Start Shopping</a>
+    </div>
+  </header>
+
+  <section class="hero-shell">
+    <div class="hero-copy">
+      <p class="dash-eyebrow">The Wellness Collection 2026</p>
+      <h1>High-performance gear designed for your everyday movement.</h1>
+      <p class="dash-subtitle">
+        NexCart brings you professional-grade equipment, from ZenFlex yoga mats to premium fitness accessories. Experience a seamless shop-to-home journey with our refined storefront.
+      </p>
+
+      <div class="hero-actions">
+        <a class="dash-link primary" routerLink="/auth/register">Build Your Gym</a>
+        <a class="dash-link" routerLink="/auth/login">Member Login</a>
+      </div>
+
+      <div class="hero-stats">
+        @for (stat of stats; track stat.label) {
+          <article class="stat-card">
+            <strong>{{ stat.value }}</strong>
+            <span>{{ stat.label }}</span>
+          </article>
+        }
+      </div>
+    </div>
+
+    <div class="hero-showcase">
+      <div class="showcase-card showcase-card--primary">
+        <p>Featured: ZenFlex Series</p>
+        <h2>Non-slip, eco-friendly mats for the ultimate grip.</h2>
+        <span>Shop Accessories</span>
+      </div>
+      <div class="showcase-stack">
+        <article class="showcase-card showcase-card--mini">
+          <span>Fast Delivery</span>
+          <strong>Free shipping on orders over Rs. 500</strong>
+        </article>
+        <article class="showcase-card showcase-card--mini">
+          <span>Secure Payments</span>
+          <strong>Encrypted checkout and account protection</strong>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="product-section">
+    <div class="section-heading">
+      <div>
+        <p class="dash-eyebrow">Curated for you</p>
+        <h2>Tested for durability, styled for your home</h2>
+      </div>
+      <a class="dash-link" routerLink="/auth/register">Join for Member Pricing</a>
+    </div>
+
+    <div class="dash-grid">
+      @for (product of featuredProducts; track product.name) {
+        <article class="dash-card">
+          <span class="dash-pill">{{ product.accent }}</span>
+          <p class="product-category">{{ product.category }}</p>
+          <h3>{{ product.name }}</h3>
+          <p>Expertly crafted {{ product.name }} featuring high-density materials and a clean aesthetic to match your active lifestyle.</p>
+          <div class="product-footer">
+            <strong>{{ product.price }}</strong>
+            <a routerLink="/auth/login">Add to Cart</a>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="dash-cta">
+    <div>
+      <p class="dash-eyebrow">NexCart Membership</p>
+      <h2>One account for all your fitness and lifestyle needs.</h2>
+      <p>
+        Create your NexCart account today to track your orders, manage your ZenFlex subscriptions, and access exclusive "Member Only" fitness launches.
+      </p>
+    </div>
+    <div class="cta-actions">
+      <a class="dash-link primary" routerLink="/auth/register">Create Account</a>
+      <a class="dash-link" routerLink="/auth/forgot-password">Forgot your password?</a>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,247 @@
+<section class="details-page">
+  <div class="details-shell">
+    <header class="details-topbar">
+      <button class="ghost-button" type="button" (click)="goBack()">
+        <span class="button-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.8 18.7 4.1 12l6.7-6.7 1.4 1.4L7.9 11H20v2H7.9l4.3 4.3-1.4 1.4Z" />
+          </svg>
+        </span>
+        Back to products
+      </button>
+
+      <div class="topbar-actions">
+          <button class="primary-button" type="button" (click)="share()">Share 📩</button>
+      </div>
+    </header>
+
+    <section class="loading-card" *ngIf="loading">
+      <p class="eyebrow">Loading</p>
+      <h1>Fetching product details...</h1>
+      <p>We are pulling the latest product data for this view.</p>
+    </section>
+
+    <section class="error-card" *ngIf="!loading && errorMessage">
+      <p class="eyebrow">Something went wrong</p>
+      <h1>{{ errorMessage }}</h1>
+      <p>Try refreshing the page or go back to the products view.</p>
+    </section>
+
+    <ng-container *ngIf="!loading && !errorMessage && product as item">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Product spotlight</p>
+          <div class="hero-heading">
+            <div>
+              <h1>{{ item.name || 'Untitled product' }}</h1>
+              <p class="hero-description">
+                {{ item.description || 'This product does not have a description yet.' }}
+              </p>
+            </div>
+            <span class="offer-pill">{{ getDiscountLabel() }}</span>
+          </div>
+
+          <div class="hero-notes">
+            <span>{{ item.type || 'General catalog' }}</span>
+            <span>{{ item.category || 'Uncategorized' }}</span>
+            <span>{{ item.subCategory || 'No sub-category' }}</span>
+            <span>{{ item.brandName || 'Brand pending' }}</span>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card">
+              <p>Live price</p>
+              <strong>{{ (item.price ?? 0) | currency: 'INR':'symbol':'1.0-0' }}</strong>
+              <span>Current sell price in the storefront</span>
+            </article>
+
+            <article class="stat-card">
+              <p>Inventory value</p>
+              <strong>{{ getInventoryValue() | currency: 'INR':'symbol':'1.0-0' }}</strong>
+              <span>{{ getStockLabel() }}</span>
+            </article>
+
+            <article class="stat-card">
+              <p>Saved vs MRP</p>
+              <strong>{{ getMarginPercent() }}%</strong>
+              <span>Difference between original and selling price</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-stage">
+            <img
+              *ngIf="getProductImage(); else visualFallback"
+              [src]="getProductImage()"
+              [alt]="item.name || 'Product image'"
+            />
+
+            <ng-template #visualFallback>
+              <div class="visual-fallback">
+                <div class="fallback-chip">Preview unavailable</div>
+                <div class="device device-main"></div>
+                <div class="device device-mini"></div>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="visual-meta">
+            <div>
+              <p>Brand</p>
+              <strong>{{ item.brandName || 'Not specified' }}</strong>
+            </div>
+            <div>
+              <p>Status</p>
+              <strong [class]="'tone-' + getStockTone()">{{ getStockLabel() }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="details-layout">
+        <div class="content-stack">
+          <article class="content-card narrative-card">
+            <p class="eyebrow">Overview</p>
+            <h2>Product story and merchandising context</h2>
+            <p>
+              {{ item.description || 'Add a richer narrative here to help your admin team understand how this product should be positioned in the catalog.' }}
+            </p>
+          </article>
+
+          <article class="content-card metrics-card">
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Commercial snapshot</p>
+                <h2>Pricing and stock performance</h2>
+              </div>
+            </div>
+
+            <div class="metric-grid">
+              <div class="metric-tile">
+                <span>Selling price</span>
+                <strong>{{ (item.price ?? 0) | currency: 'INR':'symbol':'1.0-0' }}</strong>
+              </div>
+
+              <div class="metric-tile">
+                <span>Original price</span>
+                <strong>{{ (item.originalPrice ?? 0) | currency: 'INR':'symbol':'1.0-0' }}</strong>
+              </div>
+
+              <div class="metric-tile">
+                <span>Offer status</span>
+                <strong>{{ getDiscountLabel() }}</strong>
+              </div>
+
+              <div class="metric-tile">
+                <span>Units in stock</span>
+                <strong>{{ item.stock ?? 0 }}</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="content-card metrics-card">
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">User Thoughts</p>
+                <h2>Product reviews and feedback</h2>
+              </div>
+            </div>
+
+            <div class="review-composer">
+              <div class="review-form-shell">
+                <label class="review-label" for="review-comment">Share your experience</label>
+                <textarea
+                  id="review-comment"
+                  class="review-input"
+                  rows="4"
+                  placeholder="Tell others what stood out about this product..."
+                  [(ngModel)]="comment"
+                ></textarea>
+              </div>
+
+              <div class="review-actions">
+                <div class="rating-panel">
+                  <span class="review-label">Your rating</span>
+                  <div class="star-row" aria-label="Select rating">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <button
+                        type="button"
+                        class="star-button"
+                        [class.active]="rating >= star"
+                        (click)="rating = star"
+                        [attr.aria-label]="'Rate ' + star + ' star'"
+                      >
+                        ⭐
+                      </button>
+                    }
+                  </div>
+                </div>
+
+                <button class="primary-button review-submit" type="button" (click)="giveFeedback(productId)">
+                  Give Review
+                </button>
+              </div>
+            </div>
+
+              @for(review of item.reviews; track $index) {
+                <div class="metric-tile review-tile">
+                  <span>{{ review.user }}</span>
+                  <strong>{{ review.rating }} / 5</strong>
+                  <p>{{ review.comment }}</p>
+                </div>
+              } @empty {
+                <p class="no-reviews">No reviews yet. Be the first to rate this product!</p>
+              }
+          </article>
+        </div>
+
+        <aside class="sidebar-stack">
+          <article class="content-card info-card">
+            <p class="eyebrow">Catalog info</p>
+            <h2>Structured details</h2>
+
+            <dl class="info-list">
+              <div>
+                <dt>Product ID</dt>
+                <dd>{{ item.id ?? productId }}</dd>
+              </div>
+              <div>
+                <dt>Type</dt>
+                <dd>{{ item.type || 'Not assigned' }}</dd>
+              </div>
+              <div>
+                <dt>Category</dt>
+                <dd>{{ item.category || 'Not assigned' }}</dd>
+              </div>
+              <div>
+                <dt>Sub-category</dt>
+                <dd>{{ item.subCategory || 'Not assigned' }}</dd>
+              </div>
+              <div>
+                <dt>Brand</dt>
+                <dd>{{ item.brandName || 'Not assigned' }}</dd>
+              </div>
+              <div>
+                <dt>Rating</dt>
+                <dd>{{ item.rating ?? 'N/A' }}</dd>
+              </div>
+              <div>
+                <dt>Sold</dt>
+                <dd>{{ item.sold ?? 'N/A' }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="content-card action-card">
+            <p class="eyebrow">Quick actions</p>
+            <h2>Keep the catalog moving</h2>
+            <button class="primary-button full-width" type="button" (click)="goBack()">Browse all products</button>
+          </article>
+        </aside>
+      </section>
+    </ng-container>
+  </div>
+</section>
+
+
